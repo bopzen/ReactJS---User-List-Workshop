@@ -1,6 +1,10 @@
 import UserItem from './user-item/UserItem.jsx'
 
-export default function UserTable({ users }) {
+export default function UserTable({ 
+    users,
+    userDetailsClickHandler,
+    userDeleteClickHandler
+}) {
     return (
         <div className="table-wrapper">
             <table className="table">
@@ -63,6 +67,8 @@ export default function UserTable({ users }) {
                         <UserItem 
                             key={user._id}
                             user={user}
+                            userDetailsClickHandler={userDetailsClickHandler}
+                            userDeleteClickHandler={userDeleteClickHandler}
                         />
                     )}              
                 </tbody>

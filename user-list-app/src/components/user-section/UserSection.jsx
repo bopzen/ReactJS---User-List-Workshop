@@ -4,13 +4,17 @@ import UserTable from './user-table/UserTable.jsx';
 import UserCreate from './user-create/UserCreate.jsx';
 
 import { useState, useEffect } from 'react';
+import UserDetails from './user-details/UserDetails.jsx';
+import UserDelete from './user-delete/UserDelete.jsx';
 
 
 const BASE_URL = 'http://localhost:3030/jsonstore';
 
 export default function UserSection() {
     const [users, setUsers] = useState([]);
-    const [showCreateUser, setShowCreateUser] = useState(false)
+    const [showCreateUser, setShowCreateUser] = useState(false);
+    const [showDetailsUser, setShowDetailsUser] = useState(null);
+    const [showDeleteUser, setShowDeleteUser] = useState(null)
 
     useEffect(() => {
         async function getUsers() {
@@ -60,17 +64,61 @@ export default function UserSection() {
         setShowCreateUser(false);
     }
 
+    const userDetailsClickHandler = (userId) => {
+        setShowDetailsUser(userId);
+    }
+
+    const userDetailsCloseHandler = () => {
+        setShowDetailsUser(null);
+    }
+
+    const userDeleteClickHandler = (userId) => {
+        setShowDeleteUser(userId);
+    }
+
+    const userDeleteCloseHandler = () => {
+        setShowDeleteUser(null);
+    }
+
+    const userDeleteHandler = async (userId) => {
+        await fetch(`${BASE_URL}/users/${userId}`, {
+            method: 'DELETE',
+        })
+
+        setUsers(oldUsers => oldUsers.filter(user => user._id !== userId));
+        setShowDeleteUser(null);
+    }
 
     return (
         <section className="card users-container">
             <Search />
-            <UserTable users={users} />
+            <UserTable 
+                users={users} 
+                userDetailsClickHandler={userDetailsClickHandler}
+                userDeleteClickHandler={userDeleteClickHandler}
+            />
 
-            {showCreateUser && 
+            {showCreateUser && (
                 <UserCreate 
-                closeHandler={CreateUserCloseHandler}
-                saveHandler={CreateUserSaveHandler}
-                />}
+                    closeHandler={CreateUserCloseHandler}
+                    saveHandler={CreateUserSaveHandler}
+                />
+            )}
+
+            {showDetailsUser && (
+                <UserDetails 
+                    user={users.find(user => user._id === showDetailsUser)}
+                    userDetailsCloseHandler={userDetailsCloseHandler}
+                />
+            )}
+
+            {showDeleteUser && (
+                <UserDelete
+                user={users.find(user => user._id === showDeleteUser)}
+                userDeleteHandler={() => userDeleteHandler(showDeleteUser)}
+                userDeleteCloseHandler={userDeleteCloseHandler}
+                />
+            )}
 
             <button className="btn-add btn" onClick={CreateUserClickHandler}>Add new user</button>
             <Pagination />

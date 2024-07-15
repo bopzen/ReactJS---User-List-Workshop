@@ -3,6 +3,7 @@ import UserItem from './user-item/UserItem.jsx'
 export default function UserTable({ 
     users,
     userDetailsClickHandler,
+    userEditClickHandler,
     userDeleteClickHandler
 }) {
     return (
@@ -68,6 +69,7 @@ export default function UserTable({
                             key={user._id}
                             user={user}
                             userDetailsClickHandler={userDetailsClickHandler}
+                            userEditClickHandler={userEditClickHandler}
                             userDeleteClickHandler={userDeleteClickHandler}
                         />
                     )}              

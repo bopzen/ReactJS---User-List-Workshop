@@ -6,6 +6,7 @@ import UserCreate from './user-create/UserCreate.jsx';
 import { useState, useEffect } from 'react';
 import UserDetails from './user-details/UserDetails.jsx';
 import UserDelete from './user-delete/UserDelete.jsx';
+import UserEdit from './user-edit/UserEdit.jsx';
 
 
 const BASE_URL = 'http://localhost:3030/jsonstore';
@@ -14,7 +15,9 @@ export default function UserSection() {
     const [users, setUsers] = useState([]);
     const [showCreateUser, setShowCreateUser] = useState(false);
     const [showDetailsUser, setShowDetailsUser] = useState(null);
+    const [showEditUser, setShowEditUser] = useState(null);
     const [showDeleteUser, setShowDeleteUser] = useState(null)
+
 
     useEffect(() => {
         async function getUsers() {
@@ -72,6 +75,14 @@ export default function UserSection() {
         setShowDetailsUser(null);
     }
 
+    const userEditClickHandler = (userId) => {
+        setShowEditUser(userId)
+    }
+
+    const userEditCloseHandler = () => {
+        setShowEditUser(null);
+    }
+
     const userDeleteClickHandler = (userId) => {
         setShowDeleteUser(userId);
     }
@@ -95,6 +106,7 @@ export default function UserSection() {
             <UserTable 
                 users={users} 
                 userDetailsClickHandler={userDetailsClickHandler}
+                userEditClickHandler={userEditClickHandler}
                 userDeleteClickHandler={userDeleteClickHandler}
             />
 
@@ -111,6 +123,14 @@ export default function UserSection() {
                     userDetailsCloseHandler={userDetailsCloseHandler}
                 />
             )}
+
+            {showEditUser && (
+                <UserEdit
+                    user={users.find(user => user._id === showEditUser)}
+                    userEditCloseHandler={userEditCloseHandler}
+                />
+            )}
+
 
             {showDeleteUser && (
                 <UserDelete
